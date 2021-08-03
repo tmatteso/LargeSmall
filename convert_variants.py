@@ -6,6 +6,7 @@ import sys
 
 def main():
     # import the ESMs
+    assert len(sys.argv) == 3, "Did you specify a vcf input filepath and output file name?"
     lg_snp = parse_dicts.dic_of_ls_founders_import("data/12864_2015_1592_MOESM3_ESM")
     lg_indel = parse_dicts.dic_of_ls_founders_import("data/12864_2015_1592_MOESM4_ESM")
     sm_snp = parse_dicts.dic_of_ls_founders_import("data/12864_2015_1592_MOESM5_ESM")
@@ -35,7 +36,7 @@ def main():
     print("allele processing done")
 
     # write the output file
-    parse_dicts.write_output(ref_dict, sample_dict, col_list, "modifiedLS.vcf")
+    parse_dicts.write_output(ref_dict, sample_dict, col_list, sys.argv[2])
     print("export done")
 
 
