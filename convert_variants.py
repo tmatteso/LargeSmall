@@ -4,16 +4,18 @@ import helper_functions.parse_dicts as parse_dicts
 
 
 def main():
-    # import the vcf
-    sample_dict, ref_dict, col_list = parse_dicts.dic_of_ls_vcf_import("data/parsed_vcf", 0)
-    print("vcf done")
-
     # import the ESMs
     lg_snp = parse_dicts.dic_of_ls_founders_import("data/12864_2015_1592_MOESM3_ESM")
     lg_indel = parse_dicts.dic_of_ls_founders_import("data/12864_2015_1592_MOESM4_ESM")
     sm_snp = parse_dicts.dic_of_ls_founders_import("data/12864_2015_1592_MOESM5_ESM")
     sm_indel = parse_dicts.dic_of_ls_founders_import("data/12864_2015_1592_MOESM6_ESM")
     print("import complete")
+
+    # import the vcf
+    sample_dict, ref_dict, col_list = parse_dicts.dic_of_ls_vcf_import("data/ail.genos.vcf")
+    print("vcf done")
+
+
 
     # merge dicts
     lg_indel.update(lg_snp)

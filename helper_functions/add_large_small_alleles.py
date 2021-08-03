@@ -21,14 +21,14 @@ def process_alleles(variant_str):
 
 def produce_new_alt_allele_entries(founder_rows, ref_dict_row):
     # turn the ALT into a list, add the founder alleles at this locus to the list
-    ref_dict_row[5] = [[ref_dict_row[5]]]
+    ref_dict_row[4] = [[ref_dict_row[4]]]
     for founder_row in founder_rows:
         if founder_row != []:
             alleles = process_alleles(founder_row[1])
-            ref_dict_row[5].append(alleles)
+            ref_dict_row[4].append(alleles)
         # if no founder allele at this locus, append an empty list
         elif founder_row == []:
-            ref_dict_row[5].append([])
+            ref_dict_row[4].append([])
         else:
             raise ValueError("Founder Error detected")
     return ref_dict_row

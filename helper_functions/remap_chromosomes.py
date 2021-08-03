@@ -4,25 +4,25 @@ def map_alleles_from_chromosomes(chromosomes, ref_dict_row):
     for allele in alleles:
         # 0 means map from ref
         if allele == "0":
-            allele_list.append(ref_dict_row[4])
+            allele_list.append(ref_dict_row[3])
         # 1 means map from alt
         else:
             # because the first vcf always had one alt allele at each position, we have the strange indexing here
             # this can be changed for different vcfs if need be
-            allele_list.append(ref_dict_row[5][0][0])
+            allele_list.append(ref_dict_row[4][0][0])
     return allele_list
 
 
 # simply checks if this particular allele exists in the lg founder
 def allele_in_large(allele, alleles):
-    if allele in alleles[5][1]:
+    if allele in alleles[4][1]:
         return True
     return False
 
 
 # simply checks if this particular allele exists in the sm founder
 def allele_in_small(allele, alleles):
-    if allele in alleles[5][2]:
+    if allele in alleles[4][2]:
         return True
     return False
 
@@ -47,7 +47,7 @@ def generate_new_allele_map(alleles, allele_list):
 def declare_allele_class(ref_dict_row, sample_dict_row):
     # update each sample to translate 0|1 to L|S, etc.
     for sample in range(len(sample_dict_row)):
-        # first add the lg and small allels to the alt alleles in the reference dict
+        # first add the lg and small alleles to the alt alleles in the reference dict
         allele_list = map_alleles_from_chromosomes(sample_dict_row[sample], ref_dict_row)
         # then translate the allele mapping from ref or alt to lg/sm
         new_chrom_map = generate_new_allele_map(ref_dict_row, allele_list)

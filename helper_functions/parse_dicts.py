@@ -19,26 +19,27 @@ def dic_of_ls_founders_import(fName):
     return entries
 
 
-def dic_of_ls_vcf_import(fName, skiplines):
+def dic_of_ls_vcf_import(fName):
     with open(fName, 'r') as f:
         # skip a number of comment lines, varies by vcf file
-        while skiplines > 0:
-            next(f)
-            skiplines -= 1
+
         line = f.readline()
         sample_dict, ref_dict = {}, {}
-        # read in the first non-skipped line as the column names
-        col_list = line.strip("\n").split(",")
         counter = 0
         for line in f:
-            counter += 1
-            if line:
-                line_in = (line.strip("\n")).split(",")
+            if line.startswith("#CHROM"):
+                # read in the first non-skipped line as the column names
+                col_list = line.strip("\n").split("\t")
+                counter += 1
+                continue
+            if counter >= 1 and line:
+                counter += 1
+                line_in = (line.strip("\n")).split("\t")
                 # put each line into 2 dictionaries, where the keys in both are the position of the locus
                 # sample_dict contains the "0|0" type allele mapping for each sample at this locus
-                sample_dict[line_in[2]] = line_in[10:]
+                sample_dict[line_in[1]] = line_in[9:]
                 # ref_dict contains all other entries for the locus from the imported vcf
-                ref_dict[line_in[2]] = line_in[:10]
+                ref_dict[line_in[1]] = line_in[:9]
 
             # counter is here to check that the program runs with a subset of the input, where memory is not an issue
             #if counter == 10000:
@@ -54,12 +55,14 @@ def write_output(ref_dict, sample_dict, col_list, filename):
     for pos_number in ref_dict.keys():
         # this stitches the ls of ls for the alternative alleles in the ref_dict into a str for better output parsing
         alt = ""
-        for entry in ref_dict[pos_number][5]:
+        #print(ref_dict[pos_number][4])
+        for entry in ref_dict[pos_number][4]:
             alt = alt + "".join(entry) + ", "
-        ref_dict[pos_number][5] = alt[:-2]
+        ref_dict[pos_number][4] = alt[:-2]
 
         # put the ref_dict and sample_dict back together again at each position
-        row = ref_dict[pos_number][1:]+sample_dict[pos_number]
+        row = ref_dict[pos_number]+sample_dict[pos_number]
+        #print(row)
         join = "\t".join(row)
         filename.write(join + "\n")
     filename.close()
