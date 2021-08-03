@@ -1,6 +1,7 @@
 import helper_functions.add_large_small_alleles as add_alleles
 import helper_functions.remap_chromosomes as remap
 import helper_functions.parse_dicts as parse_dicts
+import sys
 
 
 def main():
@@ -12,10 +13,8 @@ def main():
     print("import complete")
 
     # import the vcf
-    sample_dict, ref_dict, col_list = parse_dicts.dic_of_ls_vcf_import("data/ail.genos.vcf")
+    sample_dict, ref_dict, col_list = parse_dicts.dic_of_ls_vcf_import(sys.argv[1])
     print("vcf done")
-
-
 
     # merge dicts
     lg_indel.update(lg_snp)

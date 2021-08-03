@@ -55,14 +55,12 @@ def write_output(ref_dict, sample_dict, col_list, filename):
     for pos_number in ref_dict.keys():
         # this stitches the ls of ls for the alternative alleles in the ref_dict into a str for better output parsing
         alt = ""
-        #print(ref_dict[pos_number][4])
         for entry in ref_dict[pos_number][4]:
             alt = alt + "".join(entry) + ", "
         ref_dict[pos_number][4] = alt[:-2]
 
         # put the ref_dict and sample_dict back together again at each position
         row = ref_dict[pos_number]+sample_dict[pos_number]
-        #print(row)
         join = "\t".join(row)
         filename.write(join + "\n")
     filename.close()
