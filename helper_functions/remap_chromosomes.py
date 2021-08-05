@@ -13,16 +13,79 @@ def map_alleles_from_chromosomes(chromosomes, ref_dict_row):
     return allele_list
 
 
+# input is variants: 0 is original alt from vcf, 1 is L, 2 is S
+# remember that all of these can themselves be lists
+def translate_extra_symbols(allele_list):
+    allele_set = []
+    for founder_allele_index in range(len(allele_list)):
+        allele_set= set()
+        # purine
+        if allele_list[founder_allele_index] == "R":
+            allele_set.add("G")
+            allele_set.add("A")
+
+        # pyrimidine
+        elif allele_list[founder_allele_index] == "Y":
+            allele_set.add("C")
+            allele_set.add("T")
+        # G or T
+        elif allele_list[founder_allele_index] == "K":
+            allele_set.add("G")
+            allele_set.add("T")
+        # A or C
+        elif allele_list[founder_allele_index] == "M":
+            allele_set.add("A")
+            allele_set.add("C")
+        # G or C
+        elif allele_list[founder_allele_index] == "S":
+            allele_set.add("G")
+            allele_set.add("C")
+        # A or T
+        elif allele_list[founder_allele_index] == "W":
+            allele_set.add("A")
+            allele_set.add("T")
+        # G, T, or C
+        elif allele_list[founder_allele_index] == "B":
+            allele_set.add("G")
+            allele_set.add("T")
+            allele_set.add("C")
+        # G, A, or T
+        elif allele_list[founder_allele_index] == "D":
+            allele_set.add("G")
+            allele_set.add("A")
+            allele_set.add("T")
+        # A, C, or T
+        elif allele_list[founder_allele_index] == "H":
+            allele_set.add("A")
+            allele_set.add("C")
+            allele_set.add("T")
+        # G, C, or A
+        elif allele_list[founder_allele_index] == "V":
+            allele_set.add("G")
+            allele_set.add("C")
+            allele_set.add("A")
+        # A, G, C, or T
+        elif allele_list[founder_allele_index] == "N":
+            allele_set.add("A")
+            allele_set.add("G")
+            allele_set.add("C")
+            allele_set.add("T")
+        else:
+            allele_set.add(allele_list[founder_allele_index])
+    return allele_set
+
+
 # simply checks if this particular allele exists in the lg founder
+# must account for extra encoding
 def allele_in_large(allele, alleles):
-    if allele in alleles[4][1]:
+    if allele in translate_extra_symbols(alleles[4][1]):
         return True
     return False
 
 
 # simply checks if this particular allele exists in the sm founder
 def allele_in_small(allele, alleles):
-    if allele in alleles[4][2]:
+    if allele in translate_extra_symbols(alleles[4][2]):
         return True
     return False
 
