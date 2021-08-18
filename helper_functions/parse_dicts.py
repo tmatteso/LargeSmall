@@ -22,8 +22,6 @@ def dic_of_ls_founders_import(fName):
 def dic_of_ls_vcf_import(fName):
     with open(fName, 'r') as f:
         # skip a number of comment lines, varies by vcf file
-
-        line = f.readline()
         sample_dict, ref_dict = {}, {}
         counter = 0
         for line in f:
@@ -50,7 +48,7 @@ def dic_of_ls_vcf_import(fName):
 
 def write_output(ref_dict, sample_dict, col_list, filename):
     filename = open(filename, "w")
-    join = "\t".join(col_list[1:])
+    join = "\t".join(col_list)
     filename.write(join + "\n")
     for pos_number in ref_dict.keys():
         # this stitches the ls of ls for the alternative alleles in the ref_dict into a str for better output parsing
