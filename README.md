@@ -22,4 +22,4 @@ LS_same.py returns an output file that contains every chromosome position where 
 
 Find_all_same_rows.py returns an output file that contains every chromosome position where all samples have the same pair of alleles ("O|O", etc.) and the pair of alleles shared at that position. 
 
-Position_pairs.py should return the positions for each sample that has one of the pairs we're looking for ((L|L,S|S) and reverse, (L|L,L|S) and reverse, and (S|S,S|L) and reverse. This script is not ready yet, see update email for details.
+Position_pairs.py should return the positions for each sample that has one of the pairs we're looking for ((L|L,S|S) and reverse, (L|L,L|S) and reverse, and (S|S,S|L) and reverse. This script works on neighboring positions but can be expanded to work on non-neighboring positions. 
