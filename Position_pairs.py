@@ -1,6 +1,6 @@
 import sys
 
-
+"""
 # import the vcf with vaex
 def dic_of_ls_vcf_import(fName):
     with open(fName, 'r') as f:
@@ -23,10 +23,30 @@ def dic_of_ls_vcf_import(fName):
                 ref_dict[line_in[1]] = line_in[:9]
 
             # counter is here to check that the program runs with a subset of the input, where memory is not an issue
-            if counter == 10000:
-                break
+            #if counter == 10000:
+                #break
 
     return sample_dict, ref_dict, col_list
+"""
+
+def dic_of_ls_vcf_import(fName):
+    with open(fName, 'r') as f:
+        # skip a number of comment lines, varies by vcf file
+        input_rows = []
+        counter = 0
+        for line in f:
+            if line.startswith("#CHROM"):
+                # read in the first non-skipped line as the column names
+                col_list = line.strip("\n").split("\t")
+                counter += 1
+                continue
+            if counter >= 1 and line:
+                counter += 1
+                line_in = (line.strip("\n")).split("\t")
+                # put each line into 2 dictionaries, where the keys in both are the position of the locus
+                # sample_dict contains the "0|0" type allele mapping for each sample at this locus
+                input_rows.append(line_in)
+        return input_rows, col_list
 
 
 def sample_type(sample):
@@ -46,7 +66,27 @@ def in_acceptable_matches(sample_pair):
         return True
     return False
 
+def analyze_samples(input_rows, col_list):
+    output_ls = []
+    # this assumes sequentiality in the input vcf
+    for sample_index in range(len(col_list)):
+        if sample_index >= 9:
+            for row_index in range(len(input_rows)-1):
+                # determine which index is the position
+                if in_acceptable_matches([sample_type(input_rows[row_index][sample_index]),
+                                          sample_type(input_rows[row_index+1][sample_index])]):
+                    # "Sample", "Alleles_at_P1", "Alleles_at_P2", "Pos_1", "Pos_2"
+                    sample = col_list[sample_index]
+                    allele_1 = input_rows[row_index][sample_index]
+                    allele_2 = input_rows[row_index+1][sample_index]
+                    pos_1 = input_rows[row_index][1]
+                    pos_2 = input_rows[row_index+1][1]
+                    temp_ls = [sample, allele_1, allele_2, pos_1, pos_2]
+                    output_ls.append(temp_ls)
+    return output_ls
 
+
+"""
 # for one sample, multiple positions
 def analyze_samples(sample_dict, col_list):
     # struct: { SAMPLE :{"L|L":[position_1, position_2, ...]}}
@@ -74,6 +114,7 @@ def analyze_samples(sample_dict, col_list):
                             temp_ls = [sample_name, sample_1, sample_2, str(i), str(j)]
                             output_ls.append(temp_ls)
     return output_ls
+"""
 
 
 def write_output(filename, output_ls):
@@ -90,11 +131,10 @@ def write_output(filename, output_ls):
 
 def main():
     assert len(sys.argv) == 3, "Did you specify a vcf input filepath and output file name?"
-    sample_dict, ref_dict, col_list = dic_of_ls_vcf_import(sys.argv[1])
+    input_rows, col_list = dic_of_ls_vcf_import(sys.argv[1])
     print("import complete")
-    output_ls = []
     # access the df on sample columns (index:)
-    sample_output = analyze_samples(sample_dict, col_list)
+    sample_output = analyze_samples(input_rows, col_list)
     print("sample pairs complete")
     # write output
     write_output(sys.argv[2], sample_output)
